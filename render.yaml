@@ -1,0 +1,29 @@
+# Render Blueprint — static hosting for the Feature Flags UI.
+#
+# The API is a separate Render service and the app talks to it directly, so the
+# URL below must be baked in at build time: Vite inlines VITE_* variables during
+# `npm run build`. Changing this value requires a redeploy.
+services:
+  - type: web
+    name: ff-ui
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://flag-service.onrender.com
+    # The app uses browser history routing, so any unknown path has to fall
+    # through to index.html instead of returning Render's 404 page.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      # Vite emits content-hashed filenames, so these are safe to cache forever.
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      # index.html must always be revalidated or deploys never reach visitors.
+      - path: /index.html
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
