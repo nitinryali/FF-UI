@@ -23,6 +23,8 @@ export function Toggle({ checked, onChange, disabled = false, label }: TogglePro
       onClick={() => onChange(!checked)}
       className={cn(
         'relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition',
+        // Invisible 44px hit area — the visible switch itself is far too small for a thumb.
+        "after:absolute after:left-1/2 after:top-1/2 after:h-11 after:w-11 after:-translate-x-1/2 after:-translate-y-1/2 after:content-['']",
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
         checked ? 'bg-emerald-500' : 'bg-slate-300',
         disabled && 'cursor-not-allowed opacity-50',

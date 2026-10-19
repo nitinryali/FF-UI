@@ -56,6 +56,7 @@ export function TenantsPage() {
             <Button
               variant="secondary"
               size="sm"
+              className="flex-1 sm:flex-none"
               onClick={() => void tenantsQuery.refetch()}
               disabled={tenantsQuery.isFetching}
             >
@@ -66,7 +67,7 @@ export function TenantsPage() {
               )}
               Refresh
             </Button>
-            <Button size="sm" onClick={() => setCreateOpen(true)}>
+            <Button size="sm" className="flex-1 sm:flex-none" onClick={() => setCreateOpen(true)}>
               <Plus className="h-4 w-4" aria-hidden="true" />
               New tenant
             </Button>
@@ -102,11 +103,12 @@ export function TenantsPage() {
             <table className="w-full text-left text-sm">
               <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Name</th>
-                  <th className="px-4 py-3 font-medium">Selected</th>
-                  <th className="px-4 py-3 font-medium">Created</th>
-                  <th className="px-4 py-3 font-medium">Id</th>
-                  <th className="px-4 py-3 font-medium">
+                  <th className="px-3 py-3 font-medium sm:px-4">Name</th>
+                  <th className="px-3 py-3 font-medium sm:px-4">Selected</th>
+                  {/* Created and Id are desktop-only; the date rides along under the name on phones. */}
+                  <th className="hidden px-4 py-3 font-medium sm:table-cell">Created</th>
+                  <th className="hidden px-4 py-3 font-medium sm:table-cell">Id</th>
+                  <th className="px-3 py-3 font-medium sm:px-4">
                     <span className="sr-only">Actions</span>
                   </th>
                 </tr>
@@ -114,8 +116,13 @@ export function TenantsPage() {
               <tbody className="divide-y divide-slate-100">
                 {tenants.map((tenant) => (
                   <tr key={tenant.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-medium text-slate-900">{tenant.name}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-3 py-3 font-medium text-slate-900 sm:px-4">
+                      {tenant.name}
+                      <span className="mt-0.5 block text-xs font-normal text-slate-500 sm:hidden">
+                        {formatDateTime(tenant.createdAt)}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3 sm:px-4">
                       {selectedTenantId === tenant.id ? (
                         <Badge tone="brand">Active</Badge>
                       ) : (
@@ -128,13 +135,13 @@ export function TenantsPage() {
                         </Button>
                       )}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-slate-600">
+                    <td className="hidden whitespace-nowrap px-4 py-3 text-slate-600 sm:table-cell">
                       {formatDateTime(tenant.createdAt)}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="hidden px-4 py-3 sm:table-cell">
                       <CopyButton value={tenant.id} label="Copy id" />
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-3 py-3 text-right sm:px-4">
                       <Button
                         variant="ghost"
                         size="sm"

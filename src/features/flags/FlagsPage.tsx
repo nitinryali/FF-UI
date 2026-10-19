@@ -108,6 +108,7 @@ function FlagsView({ tenantId }: { tenantId: string }) {
             <Button
               variant="secondary"
               size="sm"
+              className="flex-1 sm:flex-none"
               onClick={() => void flagsQuery.refetch()}
               disabled={flagsQuery.isFetching}
             >
@@ -118,7 +119,7 @@ function FlagsView({ tenantId }: { tenantId: string }) {
               )}
               Refresh
             </Button>
-            <Button size="sm" onClick={() => setCreateOpen(true)}>
+            <Button size="sm" className="flex-1 sm:flex-none" onClick={() => setCreateOpen(true)}>
               <Plus className="h-4 w-4" aria-hidden="true" />
               New flag
             </Button>
@@ -126,8 +127,8 @@ function FlagsView({ tenantId }: { tenantId: string }) {
         }
       />
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="relative w-full max-w-xs">
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="relative w-full sm:max-w-xs">
           <Search
             className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
             aria-hidden="true"
@@ -145,7 +146,7 @@ function FlagsView({ tenantId }: { tenantId: string }) {
           aria-label="Filter by value"
           value={valueFilter}
           onChange={(event) => setValueFilter(event.target.value as ValueFilter)}
-          className="w-40"
+          className="w-full sm:w-40"
         >
           <option value="all">All values</option>
           <option value="enabled">Enabled</option>
@@ -185,12 +186,13 @@ function FlagsView({ tenantId }: { tenantId: string }) {
             <table className="w-full text-left text-sm">
               <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Name</th>
-                  <th className="px-4 py-3 font-medium">Value</th>
-                  <th className="px-4 py-3 font-medium">Version</th>
-                  <th className="px-4 py-3 font-medium">Updated</th>
-                  <th className="px-4 py-3 font-medium">Id</th>
-                  <th className="px-4 py-3 font-medium">
+                  <th className="px-3 py-3 font-medium sm:px-4">Name</th>
+                  <th className="px-3 py-3 font-medium sm:px-4">Value</th>
+                  {/* Secondary columns are dropped on phones so the table never scrolls sideways. */}
+                  <th className="hidden px-4 py-3 font-medium sm:table-cell">Version</th>
+                  <th className="hidden px-4 py-3 font-medium sm:table-cell">Updated</th>
+                  <th className="hidden px-4 py-3 font-medium sm:table-cell">Id</th>
+                  <th className="px-3 py-3 font-medium sm:px-4">
                     <span className="sr-only">Actions</span>
                   </th>
                 </tr>
@@ -201,8 +203,13 @@ function FlagsView({ tenantId }: { tenantId: string }) {
                     toggleMutation.isPending && toggleMutation.variables?.id === flag.id
                   return (
                     <tr key={flag.id} className="hover:bg-slate-50">
-                      <td className="px-4 py-3 font-medium text-slate-900">{flag.name}</td>
-                      <td className="px-4 py-3">
+                      <td className="px-3 py-3 font-medium text-slate-900 sm:px-4">
+                        {flag.name}
+                        <span className="mt-0.5 block text-xs font-normal text-slate-500 sm:hidden">
+                          {formatDateTime(flag.updatedAt)}
+                        </span>
+                      </td>
+                      <td className="px-3 py-3 sm:px-4">
                         <div className="flex items-center gap-2">
                           <Toggle
                             checked={flag.value}
@@ -217,14 +224,16 @@ function FlagsView({ tenantId }: { tenantId: string }) {
                           </span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-slate-600">{flag.version}</td>
-                      <td className="whitespace-nowrap px-4 py-3 text-slate-600">
+                      <td className="hidden px-4 py-3 text-slate-600 sm:table-cell">
+                        {flag.version}
+                      </td>
+                      <td className="hidden whitespace-nowrap px-4 py-3 text-slate-600 sm:table-cell">
                         {formatDateTime(flag.updatedAt)}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="hidden px-4 py-3 sm:table-cell">
                         <CopyButton value={flag.id} label="Copy id" />
                       </td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="px-3 py-3 text-right sm:px-4">
                         <Button
                           variant="ghost"
                           size="sm"

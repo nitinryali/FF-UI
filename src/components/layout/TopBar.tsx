@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useEffectiveTenantId } from '../../features/auth/useEffectiveTenantId'
 import { useSessionStore } from '../../features/auth/sessionStore'
 import { listTenants } from '../../features/tenants/api'
+import { useTenantName } from '../../features/tenants/useTenantName'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
 import { Select } from '../ui/Input'
@@ -28,6 +29,8 @@ export function TopBar({ onToggleNav }: { onToggleNav: () => void }) {
     queryFn: listTenants,
     enabled: isAdmin,
   })
+  // Admins read names from the selector above; tenant users resolve their own.
+  const tenantName = useTenantName(isAdmin ? null : effectiveTenantId)
 
   const handleLogout = () => {
     clear()
@@ -35,12 +38,12 @@ export function TopBar({ onToggleNav }: { onToggleNav: () => void }) {
   }
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-slate-200 bg-white px-3 md:px-4">
-      <div className="flex min-w-0 items-center gap-2">
+    <header className="flex min-h-14 shrink-0 items-center justify-between gap-2 border-b border-slate-200 bg-white px-3 pb-2 pt-[max(0.5rem,env(safe-area-inset-top))] md:px-4">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
         <Button
           variant="ghost"
           size="sm"
-          className="md:hidden"
+          className="h-9 w-9 shrink-0 p-0 md:hidden"
           onClick={onToggleNav}
           aria-label="Toggle navigation"
         >
@@ -48,13 +51,13 @@ export function TopBar({ onToggleNav }: { onToggleNav: () => void }) {
         </Button>
 
         {isAdmin ? (
-          <label className="flex min-w-0 items-center gap-2 text-sm">
-            <span className="hidden text-slate-500 sm:inline">Tenant</span>
+          <label className="flex min-w-0 flex-1 items-center gap-2 text-sm sm:flex-none">
+            <span className="hidden shrink-0 text-slate-500 sm:inline">Tenant</span>
             <Select
               aria-label="Selected tenant"
               value={selectedTenantId ?? ''}
               onChange={(event) => setSelectedTenantId(event.target.value || null)}
-              className="h-9 w-44 sm:w-56"
+              className="h-9 w-full min-w-0 sm:w-56"
               disabled={tenantsQuery.isLoading}
             >
               <option value="">
@@ -68,19 +71,31 @@ export function TopBar({ onToggleNav }: { onToggleNav: () => void }) {
             </Select>
           </label>
         ) : (
-          <div className="flex items-center gap-2 text-sm">
-            <span className="hidden text-slate-500 sm:inline">Tenant</span>
-            <Badge tone="brand">{effectiveTenantId ?? '—'}</Badge>
+          <div className="flex min-w-0 flex-1 items-center gap-2 text-sm sm:flex-none">
+            <span className="hidden shrink-0 text-slate-500 sm:inline">Tenant</span>
+            <Badge tone="brand" className="max-w-full truncate" title={effectiveTenantId ?? undefined}>
+              {tenantName ?? effectiveTenantId ?? '—'}
+            </Badge>
           </div>
         )}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
         <Badge tone={isAdmin ? 'brand' : 'neutral'}>
-          {isAdmin ? 'Platform admin' : 'Tenant user'}
+          {isAdmin ? (
+            <>
+              <span className="sm:hidden">Admin</span>
+              <span className="hidden sm:inline">Platform admin</span>
+            </>
+          ) : (
+            <>
+              <span className="sm:hidden">Tenant</span>
+              <span className="hidden sm:inline">Tenant user</span>
+            </>
+          )}
         </Badge>
         <span className="hidden text-sm text-slate-600 sm:inline">{session?.username}</span>
-        <Button variant="ghost" size="sm" onClick={handleLogout}>
+        <Button variant="ghost" size="sm" onClick={handleLogout} aria-label="Log out">
           <LogOut className="h-4 w-4" aria-hidden="true" />
           <span className="hidden sm:inline">Log out</span>
         </Button>

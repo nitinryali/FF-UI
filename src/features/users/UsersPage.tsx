@@ -78,11 +78,6 @@ export function UsersPage() {
     <>
       <PageHeader title="Users" description="Create tenant-bound accounts for this deployment." />
 
-      <Alert tone="info" className="mb-4">
-        Only creation is available today. Listing, editing, and deleting users needs new backend
-        endpoints (see the plan, section 10).
-      </Alert>
-
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="p-5 lg:col-span-2">
           <form className="space-y-4" onSubmit={onSubmit} noValidate>
@@ -163,7 +158,7 @@ export function UsersPage() {
                 />
                 <SummaryRow
                   label="Tenant"
-                  value={<span className="font-mono text-xs">{lastCreated.tenantId}</span>}
+                  value={<span className="break-all font-mono text-xs">{lastCreated.tenantId}</span>}
                 />
               </dl>
             </Card>
@@ -177,8 +172,8 @@ export function UsersPage() {
 function SummaryRow({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="font-medium text-slate-900">{value}</dd>
+      <dt className="shrink-0 text-slate-500">{label}</dt>
+      <dd className="min-w-0 text-right font-medium text-slate-900">{value}</dd>
     </div>
   )
 }

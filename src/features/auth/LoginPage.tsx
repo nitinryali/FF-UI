@@ -63,10 +63,10 @@ export function LoginPage() {
   })
 
   return (
-    <div className="flex min-h-full items-center justify-center bg-slate-50 p-4">
+    <div className="flex min-h-dvh items-center justify-center bg-slate-50 p-4">
       <Card className="w-full max-w-sm p-6">
         <div className="mb-6">
-          <h1 className="text-lg font-semibold text-slate-900">Flag Service</h1>
+          <h1 className="text-lg font-semibold text-slate-900">Feature Flags</h1>
           <p className="mt-1 text-sm text-slate-500">Sign in to manage feature flags.</p>
         </div>
 

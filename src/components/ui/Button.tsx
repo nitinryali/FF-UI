@@ -12,8 +12,9 @@ const VARIANTS: Record<Variant, string> = {
 }
 
 const SIZES: Record<Size, string> = {
-  sm: 'h-8 px-3 text-sm',
-  md: 'h-10 px-4 text-sm',
+  // Touch screens get a taller hit target; the denser desktop sizing returns at md.
+  sm: 'h-9 px-3 text-sm md:h-8',
+  md: 'h-11 px-4 text-sm md:h-10',
 }
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

@@ -5,8 +5,10 @@ import { listTenants } from './api'
 /**
  * Resolves a tenant id to its display name using the cached tenant list.
  *
- * `GET /tenants` is platform-admin only, so tenant users fall back to `null`
- * and callers should render the id instead.
+ * `GET /tenants` is platform-admin only today, so a tenant user's lookup is
+ * expected to come back `403`. The query is still enabled for them — the name
+ * shows up as soon as the API permits it — but it neither retries nor surfaces
+ * an error, and callers fall back to the id while `null` is returned.
  */
 export function useTenantName(tenantId: string | null): string | null {
   const isAdmin = useSessionStore((state) => state.session?.role === 'PLATFORM_ADMIN')
@@ -14,7 +16,8 @@ export function useTenantName(tenantId: string | null): string | null {
   const { data } = useQuery({
     queryKey: ['tenants'],
     queryFn: listTenants,
-    enabled: isAdmin,
+    enabled: tenantId !== null,
+    retry: isAdmin ? 1 : false,
   })
 
   if (!tenantId || !data) return null

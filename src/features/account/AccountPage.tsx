@@ -15,6 +15,7 @@ export function AccountPage() {
   const clear = useSessionStore((state) => state.clear)
   const effectiveTenantId = useEffectiveTenantId()
   const isAdmin = session?.role === 'PLATFORM_ADMIN'
+  const homeTenantName = useTenantName(session?.tenantId ?? null)
   const selectedTenantName = useTenantName(isAdmin ? effectiveTenantId : null)
 
   if (!session) return null
@@ -34,15 +35,23 @@ export function AccountPage() {
           label="Role"
           value={<Badge tone={isAdmin ? 'brand' : 'neutral'}>{isAdmin ? 'Platform admin' : 'Tenant user'}</Badge>}
         />
-        <Row label="Home tenant" value={<span className="font-mono text-xs">{session.tenantId}</span>} />
+        <Row
+          label="Home tenant"
+          value={
+            <span className="flex flex-wrap items-center justify-end gap-2">
+              {homeTenantName ? <span>{homeTenantName}</span> : null}
+              <span className="break-all font-mono text-xs text-slate-500">{session.tenantId}</span>
+            </span>
+          }
+        />
         {isAdmin ? (
           <Row
             label="Selected tenant"
             value={
               effectiveTenantId ? (
-                <span className="flex items-center gap-2">
+                <span className="flex flex-wrap items-center justify-end gap-2">
                   {selectedTenantName ? <span>{selectedTenantName}</span> : null}
-                  <span className="font-mono text-xs text-slate-500">{effectiveTenantId}</span>
+                  <span className="break-all font-mono text-xs text-slate-500">{effectiveTenantId}</span>
                 </span>
               ) : (
                 <span className="text-slate-500">None selected</span>
@@ -67,8 +76,8 @@ export function AccountPage() {
 function Row({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-4 p-4">
-      <span className="text-sm text-slate-500">{label}</span>
-      <span className="text-sm font-medium text-slate-900">{value}</span>
+      <span className="shrink-0 text-sm text-slate-500">{label}</span>
+      <span className="min-w-0 text-right text-sm font-medium text-slate-900">{value}</span>
     </div>
   )
 }

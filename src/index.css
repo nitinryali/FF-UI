@@ -11,3 +11,55 @@ body,
 body {
   @apply bg-slate-50 text-slate-900 antialiased;
 }
+
+/* Mobile drawer entry animations. Trivially cheap, and skipped for anyone who
+ * asks for reduced motion. */
+@keyframes ff-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ff-slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-fade-in {
+    animation: ff-fade-in 150ms ease-out;
+  }
+
+  .animate-slide-in {
+    animation: ff-slide-in 180ms ease-out;
+  }
+}
+
+@layer components {
+  /*
+   * Custom chevron for `Select` (see components/ui/Input.tsx). Kept in CSS so
+   * the data URI does not have to survive Tailwind's arbitrary-value escaping.
+   */
+  .select-chevron {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2364748b' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.6rem center;
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .select-chevron:disabled {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23cbd5e1' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  }
+
+  /* The open list is OS-rendered; these hints keep it from looking unstyled. */
+  select option {
+    @apply bg-white py-1 text-slate-900;
+  }
+}
