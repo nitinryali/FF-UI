@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "postbuild": "cp dist/index.html dist/404.html && touch dist/.nojekyll",
     "typecheck": "tsc -b",
     "lint": "oxlint",
     "preview": "vite preview"

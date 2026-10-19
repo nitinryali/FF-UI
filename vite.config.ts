@@ -8,8 +8,12 @@ const DEFAULT_API_TARGET = 'https://flag-service.onrender.com'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const apiTarget = env.VITE_API_PROXY_TARGET || DEFAULT_API_TARGET
+  // GitHub Pages serves project sites from /<repo>/, not the domain root. The
+  // deploy workflow sets VITE_BASE_PATH=/FF-UI/; locally it stays at "/".
+  const base = env.VITE_BASE_PATH || '/'
 
   return {
+    base,
     plugins: [react()],
     server: {
       port: 5173,
